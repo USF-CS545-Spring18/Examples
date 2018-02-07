@@ -1,2 +1,2 @@
 # Examples
-The repository will contain code examples from our class.
+This repository will contain code examples we discuss in class.
