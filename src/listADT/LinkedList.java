@@ -2,14 +2,15 @@ package listADT;
 
 /**
  * Uses a singly linked list with a dummy node to implement List ADT
+ * Based on the code of Prof. Galles.
  */
 public class LinkedList implements List {
 
 	/*----------------------------------------------------- */
-	/* Private Data Members -- LinkedList */
+	/* Private Data Members -- LinkList */
 	/*----------------------------------------------------- */
-	private Link head; // dummy node
-	private Link tail; // the last node
+	private Node head; // dummy node
+	private Node tail; // the last node
 	private int length; // the number of elements in the list, not counting the
 						// dummy node
 
@@ -17,7 +18,7 @@ public class LinkedList implements List {
 	/* Constructor -- LinkedList */
 	/*----------------------------------------------------- */
 	LinkedList() {
-		head = tail = new Link(); // a dummy head
+		head = tail = new Node(); // a dummy head
 		length = 0;
 	}
 
@@ -30,38 +31,53 @@ public class LinkedList implements List {
 		length = 0;
 	}
 
+	/**
+	 * Return the number of elements in the linked list
+	 * not including the dummy node
+	 * @return length of the list
+	 */
 	public int size() {
 		return length;
 	}
 
-	/** Append a new node at the end of the list */
+	/**
+	 * Append a new node with the given element to the list
+	 * @param elem new element
+	 */
 	public void add(Object elem) {
-		tail.setNext(new Link(elem, null));
+		tail.setNext(new Node(elem, null));
 		tail = tail.next();
 		length++;
 	}
 
-	/** Insert a new node at a given index */
+	/**
+	 * Insert a new node at a given index
+	 * @param index index where to insert a new node
+	 * @param elem element to insert
+	 */
 	public void add(int index, Object elem) {
 		if (index < 0 || index >= length) //
 			System.out.println("Index not in list");
 		// first we need to get to the node before the node with the given index
-		Link tmp = head;
+		Node tmp = head;
 		for (int i = 0; i < index; i++) {
 			tmp = tmp.next;
 		}
-		tmp.next = new Link(elem, tmp.next);
+		tmp.next = new Node(elem, tmp.next);
 		length++;
 	}
 
-	/** Remove the node in a given position */
+	/**
+	 * Remove the node in a given position
+	 * @param index index of the element to remove
+	 */
 	public void remove(int index) {
 		if (index < 0 || index >= length) {
 			System.out.println("Index out of bounds");
 			return;
 		}
 		// First, get to the node right before the node in position index
-		Link tmp = head;
+		Node tmp = head;
 		for (int i = 0; i < index; i++) {
 			tmp = tmp.next;
 		}
@@ -69,10 +85,13 @@ public class LinkedList implements List {
 		length--;
 	}
 
-	/** Remove the first occurrence of a given element */
+	/**
+	 * Remove the first occurrence of a given element
+	 * @param elem element to remove
+	 */
 	public void remove(Object elem) {
 		// find the index of the first occurrence of the element
-		Link tmp = head;
+		Node tmp = head;
 		while (tmp.next != null && !tmp.next.element.equals(elem)) {
 			tmp = tmp.next;
 		}
@@ -84,13 +103,17 @@ public class LinkedList implements List {
 
 	}
 
-	/** Return the object at a given index */
+	/** Return the object at a given index
+	 *
+	 * @param index index in the list
+	 * @return element in the node at the given index
+	 */
 	public Object get(int index) {
 		if (index < 0 || index >= length) {
 			System.out.println("Index out of bounds. ");
 			return null;
 		}
-		Link tmp = head.next; // the first "real" element
+		Node tmp = head.next; // the first "real" element
 		for (int i = 0; i < index; i++) {
 			tmp = tmp.next;
 		}
@@ -106,47 +129,60 @@ public class LinkedList implements List {
 		System.out.println();
 	}
 
-	/** Get the iterator for the list. Start with index 0. */
+	/** Get the iterator for the list. Start with index 0.
+	 *
+	 * @return iterator
+	 */
 	public ListIterator listIterator() {
 		return new InnerIterator(0);
 	}
 
-	/** Get the iterator for the list. Start with the given index. */
+	/** Get the iterator for the list. Start with the given index.
+	 *
+	 * @param index index in the list
+	 * @return iterator that starts at index
+	 */
 	public ListIterator listIterator(int index) {
 		return new InnerIterator(index);
 	}
 
 	/*----------------------------------------------------- */
-	/* Nested class -- Link */
+	/* Nested class -- Node */
 	/*----------------------------------------------------- */
-	private class Link {
+	private class Node {
 
 		/*----------------------------------------------------- */
-		/* Private Data Members -- Link */
+		/* Private Data Members -- Node */
 		/*----------------------------------------------------- */
 		private Object element;
-		private Link next;
+		private Node next;
 
-		/*----------------------------------------------------- */
-		/* Constructors -- Link */
-		/*----------------------------------------------------- */
-		Link(Object elem, Link nextelem) {
+		/** Constructor in class Node
+		 *
+		 * @param elem element of the node
+		 * @param nextelem next reference
+		 */
+		Node(Object elem, Node nextelem) {
 			element = elem;
 			next = nextelem;
 		}
 
-		Link(Link nextelem) {
-			next = nextelem;
+		/**
+		 * Constructor in class Node. Takes next node as a parameter
+		 * @param nextNode next node in the list
+		 */
+		Node(Node nextNode) {
+			next = nextNode;
 		}
 
-		Link() {
+		Node() {
 		}
 
 		/*----------------------------------------------------- */
-		/* Access Methods -- Link */
+		/* Access Methods -- Node */
 		/*----------------------------------------------------- */
 
-		Link next() {
+		Node next() {
 			return next;
 		}
 
@@ -154,7 +190,7 @@ public class LinkedList implements List {
 			return element;
 		}
 
-		void setNext(Link nextelem) {
+		void setNext(Node nextelem) {
 			next = nextelem;
 		}
 
@@ -166,14 +202,13 @@ public class LinkedList implements List {
 	/*----------------------------------------------------- */
 	/* Nested class -- InnerIterator */
 	/*----------------------------------------------------- */
-
 	private class InnerIterator implements ListIterator {
 
 		/*----------------------------------------------------- */
 		/* Private Data Members -- InnerIterator */
 		/*----------------------------------------------------- */
-		private Link current;  // the node before "next"
-		private Link previous;
+		private Node current;  // the node before "next"
+		private Node previous; // the node before current
 
 		/*----------------------------------------------------- */
 		/* Constructor -- InnerIterator */
@@ -198,7 +233,7 @@ public class LinkedList implements List {
 			}
 			Object previousVal = current.element;
 			previous = null;
-			Link oldCurrent = current;
+			Node oldCurrent = current;
 			current = head;
 			while (current.next != oldCurrent) {
 				previous = current;
@@ -227,7 +262,10 @@ public class LinkedList implements List {
 		}
 
 
-		/** Set the value of current (the element before "next") */
+		/** Set the value of current (the element before "next")
+		 *
+		 * @param value new value
+		 */
 		public void set(Object value) {
 			if (current == head || current == null) {
 				System.out.println("Iterator not in list");
@@ -249,14 +287,15 @@ public class LinkedList implements List {
 		}
 
 		/** Insert the element right before "next"
-		 *  (Right after current) 
+		 *
+		 * @param elem the element to insert
 		 */
 		public void add(Object elem) {
 			if (current == null) {
 				System.out.println("Iterator not in list");
 				return;
 			}
-			current.setNext(new Link(elem, current.next()));
+			current.setNext(new Node(elem, current.next()));
 			previous = current; //
 			current = current.next;
 			length++;
