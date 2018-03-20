@@ -171,4 +171,62 @@ public class SortingAlgorithms {
             arr[k] = temp[k];
     }
 
+    /**
+     * Quick sort
+     * @param arr Array of integers
+     */
+    public static void quickSort(int arr[]) {
+
+        quickSort(arr, 0, arr.length - 1);
+    }
+
+    /**
+     * Quick sort method that takes low and high indices
+     * @param arr array to sort
+     * @param low the index where we should start sorting the array
+     * @param high the index where we want to finish sorting the array
+     */
+    public static void quickSort(int arr[], int low, int high) {
+        int pivot; // index of the pivot
+        if (low < high) {
+            pivot = partition(arr, low, high);
+            quickSort(arr, low, pivot - 1);
+            quickSort(arr, pivot + 1, high);
+        }
+    }
+
+    /**
+     * Helper method for quickSort.
+     * @param arr array of integers
+     * @param low the starting value of i
+     * @param high the starting value of j
+     * @return
+     */
+    static int partition(int arr[], int low, int high) {
+        int pivot;
+        int tmp;
+        int max = high;
+        int mid = (low + high) / 2;
+
+        tmp = arr[mid];
+        arr[mid] = arr[high];
+        arr[high] = tmp;
+        pivot = arr[high];
+        low--;
+        do {
+            while ((low < high) && (arr[++low] < pivot))
+                ;
+            while ((low < high) && (arr[--high] > pivot))
+                ;
+            // swap values at low and high
+            tmp = arr[low];
+            arr[low] = arr[high];
+            arr[high] = tmp;
+        } while (low < high);
+        tmp = arr[low];
+        arr[low] = arr[max];
+        arr[max] = tmp;
+        return low;
+    }
+
 }
