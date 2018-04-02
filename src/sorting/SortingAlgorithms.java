@@ -14,14 +14,14 @@ public class SortingAlgorithms {
     /** Print a given array of integers */
     public static void print(int[] arr) {
         for (int elem : arr)
-            System.out.print(elem + " ");
+            System.out.print(elem + ", ");
         System.out.println();
     }
 
     /** Print a given array of records */
     public static void print(Elem[] arr) {
         for (Elem elem : arr)
-            System.out.print(elem + " ");
+            System.out.print(elem + ", ");
         System.out.println();
     }
 
@@ -130,6 +130,8 @@ public class SortingAlgorithms {
         mergeSort(arr, temp, low, mid);
         mergeSort(arr, temp, mid + 1, high);
         merge(arr, temp, low, mid, high); // merge two sorted halves into one
+        SortingAlgorithms.print(arr);
+
         // sorted list
     }
 
@@ -190,6 +192,8 @@ public class SortingAlgorithms {
         int pivot; // index of the pivot
         if (low < high) {
             pivot = partition(arr, low, high);
+            System.out.println("pivot = " + arr[pivot]);
+            SortingAlgorithms.print(arr);
             quickSort(arr, low, pivot - 1);
             quickSort(arr, pivot + 1, high);
         }
@@ -227,6 +231,74 @@ public class SortingAlgorithms {
         arr[low] = arr[max];
         arr[max] = tmp;
         return low;
+    }
+
+    /**
+     * Sort the array of elements of type Elem using Bin sort.
+     * @param arr an array of Elements.
+     * @param maxValue the maximum value
+     * of elements in the array.
+     */
+    public static void binSort(Elem[] arr, int maxValue) {
+        int i;
+        LinkedList<Elem>[] llists = new LinkedList[maxValue + 1];
+        for (i = 0; i <= maxValue; i++)
+            llists[i] = new LinkedList<Elem>();
+
+        for (i = 0; i < arr.length; i++)
+            llists[arr[i].key()].addLast(arr[i]);
+
+        int insertIndex = 0;
+        for (i = 0; i <= maxValue; i++) {
+            Iterator<Elem> it = llists[i].iterator();
+            while (it.hasNext()) {
+                Elem elem = it.next();
+                //int key = elem.key();
+                arr[insertIndex] = elem;
+                insertIndex++;
+            }
+
+        }
+    }
+
+    /**
+     * Sorts using Radix Sort.
+     * Assumes the number of digits in each key is the same.
+     * @param arr array of elements of type Elem.
+     */
+    public static void radixSort(Elem[] arr) {
+        // First, compute the number of digits in each key
+        // Since we assume they all have the same # of digits,
+        // it's enough to compute the # of digits in the first key
+        if (arr.length == 0)
+            return;
+        int ndigits = (int) (Math.log10(arr[0].key()) + 1);
+
+        Elem[] temp = new Elem[arr.length];
+
+        int[] count = new int[10]; // count array for counting sort
+        for (int i = 0, place = 1; i < ndigits; i++, place *= 10) {
+            // place will be 1, then 10, then 100, then 1000, etc.
+            // initialize count array
+            for (int j = 0; j < 10; j++)
+                count[j] = 0;
+            // iterate over arr and fill out count array
+            for (int j = 0; j < arr.length; j++) {
+                int k = (arr[j].key() / place) % 10;
+                count[k]++;
+            }
+
+            for (int j = 1; j < 10; j++) // modified count array
+                count[j] += count[j - 1];
+
+            // result will be in temp
+            for (int j = arr.length - 1; j >= 0; j--)
+                temp[--count[(arr[j].key() / place) % 10]] = arr[j];
+
+            // copy the result back into arr
+            for (int j = 0; j < arr.length; j++)
+                arr[j] = temp[j];
+        }
     }
 
 }
